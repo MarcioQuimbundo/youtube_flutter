@@ -26,4 +26,16 @@ class Api {
       throw Exception("Failed to load videos");
     }
   }
+
+  Future<List> suggestions(String search) async {
+    http.Response response = await http.get(
+        "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q=$search&format=5&alt=json");
+    if (response.statusCode == 200) {
+      return json.decode(response.body)[1].map((v){
+        return v[0];
+      }).toList();
+    } else {
+      throw Exception("Failed to load suggestion");
+    }
+  }
 }
