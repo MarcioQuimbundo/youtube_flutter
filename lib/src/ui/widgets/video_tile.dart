@@ -1,4 +1,6 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertube/src/blocs/favorite_bloc.dart';
 import 'package:fluttertube/src/models/video_model.dart';
 
 class VideoTile extends StatelessWidget {
@@ -7,6 +9,7 @@ class VideoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<FavoriteBloc>(context);
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4),
       child: Column(
@@ -24,18 +27,42 @@ class VideoTile extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                      child: Text(video.title, style: TextStyle(color: Colors.white, fontSize: 16), maxLines: 2,),
+                      child: Text(
+                        video.title,
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        maxLines: 2,
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8),
-                      child: Text(video.channel, style: TextStyle(color: Colors.white, fontSize: 16),),
+                      child: Text(
+                        video.channel,
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ],
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.star_border, color: Colors.white, size: 30,),
-                onPressed: () {},
+              StreamBuilder<Map<String, Video>>(
+                stream: bloc.outFav,
+                initialData: {},
+                builder: (context, snapshot) {
+                  if (snapshot.hasData)
+                    return IconButton(
+                      icon: Icon(
+                        snapshot.data.containsKey(video.id)
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        bloc.toggleFavorite(video);
+                      },
+                    );
+                  else
+                    return CircularProgressIndicator();
+                },
               )
             ],
           )
