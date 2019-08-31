@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertube/src/blocs/favorite_bloc.dart';
 import 'package:fluttertube/src/blocs/videos_bloc.dart';
 import 'package:fluttertube/src/models/video_model.dart';
+import 'package:fluttertube/src/ui/pages/favorite_page.dart';
 import 'package:fluttertube/src/ui/widgets/video_tile.dart';
 import 'package:fluttertube/src/utils/delegates/data_search.dart';
 
@@ -23,20 +24,23 @@ class HomePage extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: StreamBuilder<Map<String, Video>>(
-              stream: blocFav.outFav,
-              builder: (context, snapshot) {
-                if(snapshot.hasData)
-                return Text(
-                  "${snapshot.data.length}",
-                  style: TextStyle(fontSize: 16),
-                );
-                else  return Container();
-              }
-            ),
+                stream: blocFav.outFav,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData)
+                    return Text(
+                      "${snapshot.data.length}",
+                      style: TextStyle(fontSize: 16),
+                    );
+                  else
+                    return Container();
+                }),
           ),
           IconButton(
             icon: Icon(Icons.star),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => FavoritePage()));
+            },
           ),
           IconButton(
             icon: Icon(Icons.search),
